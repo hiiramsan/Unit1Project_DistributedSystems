@@ -37,11 +37,11 @@ public class Client {
         String message = p.getName() + "," + p.getWeight() + "," + p.getHeight();
         byte[] buffer = message.getBytes();
 
-        // send
-        DatagramPacket packet = new DatagramPacket(buffer, buffer.length, InetAddress.getLocalHost(), 1001);
+        // send to middleware
+        DatagramPacket packet = new DatagramPacket(buffer, buffer.length, InetAddress.getLocalHost(), 1002);
         udpSocket.send(packet);
 
-        // Trying to receive the results
+        // receive the results
         byte[] bufferResponse = new byte[2000];
 
         DatagramPacket responsePacket = new DatagramPacket(bufferResponse, bufferResponse.length);
