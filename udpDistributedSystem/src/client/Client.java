@@ -4,19 +4,28 @@
  */
 package client;
 
+import com.formdev.flatlaf.FlatDarkLaf;
+import com.formdev.flatlaf.themes.FlatMacDarkLaf;
+
+import javax.swing.*;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
 import java.util.Scanner;
+import java.util.logging.Logger;
 
 /**
  *
  * @author carlo
  */
 public class Client {
+    private static Logger logger = Logger.getLogger(Client.class.getName());
+
     public static void main(String[] args) throws SocketException, IOException {
+        setLookAndFeel();
+        JOptionPane.showMessageDialog(null, "Client is running");
         DatagramSocket udpSocket = new DatagramSocket();
 
         // text to send
@@ -53,5 +62,13 @@ public class Client {
         
         // close socket
         udpSocket.close();
+    }
+
+    private static void setLookAndFeel() {
+        try {
+            UIManager.setLookAndFeel(new FlatMacDarkLaf());
+        } catch (Exception e) {
+            logger.severe("Error setting FlatLaf theme");
+        }
     }
 }

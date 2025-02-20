@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="udpDistributedSystem">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/dist/udpDistributedSystem.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/flatlaf-3.5.4.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/flatlaf-3.5.4.jar!/com" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

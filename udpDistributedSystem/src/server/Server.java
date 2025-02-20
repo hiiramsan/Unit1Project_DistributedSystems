@@ -4,6 +4,9 @@
  */
 package server;
 
+import com.formdev.flatlaf.FlatDarkLaf;
+
+import javax.swing.*;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -19,14 +22,13 @@ public class Server {
     /**
      * @param args the command line arguments
      */
-    public static void main(String[] args) throws SocketException, IOException {
+    public static void main(String[] args) throws IOException {
         // UDP Socket on port 1001
         DatagramSocket udpSocket = new DatagramSocket(1001);
-
         while (true) {
-            // the buffer or basket for the data
-            byte buffer[] = new byte[2000];
 
+            // the buffer or basket for the data
+            byte[] buffer = new byte[2000];
             // make the packet and receive
             DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
             System.out.println("Waiting to receive...");
