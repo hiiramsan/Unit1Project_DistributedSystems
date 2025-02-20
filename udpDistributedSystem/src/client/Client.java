@@ -23,30 +23,34 @@ public class Client {
         setLookAndFeel();
 
         DatagramSocket udpSocket = new DatagramSocket();
-        // make object
+
         Person person = getUserInput();
 
-        // object to csv
         String message = personToCsv(person);
 
-        byte[] buffer = message.getBytes();
+        sendMessage(message, udpSocket);
 
-        // send to middleware
-        DatagramPacket packet = new DatagramPacket(buffer, buffer.length, InetAddress.getLocalHost(), 1002);
-        udpSocket.send(packet);
+        String serverResponse = getServerResponse(udpSocket);
 
-        // receive the results
+        showServerResponse(serverResponse);
+
+        udpSocket.close();
+    }
+
+    private static String getServerResponse(DatagramSocket udpSocket) throws IOException {
         byte[] bufferResponse = new byte[2000];
 
         DatagramPacket responsePacket = new DatagramPacket(bufferResponse, bufferResponse.length);
         udpSocket.receive(responsePacket);
 
-        String serverResponse = new String(responsePacket.getData(), 0, responsePacket.getLength());
+        return new String(responsePacket.getData(), 0, responsePacket.getLength());
+    }
 
-        showServerResponse(serverResponse);
-
-        // close socket
-        udpSocket.close();
+    private static void sendMessage(String message, DatagramSocket udpSocket) throws IOException {
+        byte[] buffer = message.getBytes();
+        // send to middleware
+        DatagramPacket packet = new DatagramPacket(buffer, buffer.length, InetAddress.getLocalHost(), 1002);
+        udpSocket.send(packet);
     }
 
     private static void setLookAndFeel() {
