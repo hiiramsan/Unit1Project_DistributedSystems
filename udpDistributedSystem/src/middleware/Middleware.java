@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.net.SocketTimeoutException;
 
 public class Middleware {
 
@@ -28,7 +29,17 @@ public class Middleware {
         byte[] buffer = new byte[2000];
         DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
         System.out.println("Waiting to receive requests...");
-        udpSocket.receive(packet);
+        try{
+            udpSocket.receive(packet);
+        } catch (SocketTimeoutException e) {
+        System.err.println("Timeout: No data received within the specified time.");
+        throw e;
+    } catch (IOException e) {
+        System.err.println("Error receiving client request: " + e.getMessage());
+        throw e;
+    }
+        
+        
         return packet;
     }
 
@@ -84,7 +95,12 @@ public class Middleware {
             InetAddress clientAddress = packet.getAddress();
             int clientPort = packet.getPort();
             DatagramPacket responsePacket = new DatagramPacket(serverMessage.getBytes(), serverMessage.length(), clientAddress, clientPort);
-            udpSocket.send(responsePacket);
+            try {
+                udpSocket.send(responsePacket);
+            } catch (IOException e) {
+                System.err.println("Error sending response to client: " + e.getMessage());
+                throw e;
+            }
         }
     }
 }

@@ -12,6 +12,7 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
+import java.net.UnknownHostException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -49,17 +50,31 @@ public class Client {
         byte[] bufferResponse = new byte[2000];
 
         DatagramPacket responsePacket = new DatagramPacket(bufferResponse, bufferResponse.length);
+        try{
         udpSocket.receive(responsePacket);
 
         return new String(responsePacket.getData(), 0, responsePacket.getLength());
+        }catch (IOException e){
+        logger.log(Level.SEVERE,"Error receiving response from server.");
+        throw new IOException("Error processing request. Invalid data.");
+        }
     }
 
     private static void sendMessage(String message, DatagramSocket udpSocket) throws IOException {
+        try{
         byte[] buffer = message.getBytes();
         // send to middleware
         DatagramPacket packet = new DatagramPacket(buffer, buffer.length, InetAddress.getLocalHost(), 1002);
         udpSocket.send(packet);
+        }catch (UnknownHostException e){
+            logger.log(Level.SEVERE, "The server address could not be determined");
+            throw new IOException("Could not connect to the server");
+        } catch (IOException e) {
+            logger.log(Level.SEVERE, "Error sending message to server.", e);
+            throw new IOException("Could not contact server.");
+        }
     }
+    
 
     private static void setLookAndFeel() {
         try {
@@ -103,6 +118,7 @@ public class Client {
     }
 
     private static void showServerResponse(String serverResponse) {
+        
         String[] responseParts = serverResponse.split(",");
 
         String name = responseParts[0];
