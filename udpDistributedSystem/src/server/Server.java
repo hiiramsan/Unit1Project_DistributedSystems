@@ -14,6 +14,8 @@ import java.net.InetAddress;
 import java.net.SocketException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -28,7 +30,7 @@ public class Server {
     /**
      * @param args the command line arguments
      */
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args)  {
         try (
             DatagramSocket udpSocket = new DatagramSocket(Server.PORT);
         ) {
@@ -40,6 +42,10 @@ public class Server {
                 udpSocket.receive(packet);
                 threadPool.execute(new RequestHandler(packet));
             }
+        } catch (SocketException ex) {
+            Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 }

@@ -11,6 +11,8 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.net.SocketException;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -19,22 +21,28 @@ import java.util.logging.Logger;
 public class Client {
     private static final Logger logger = Logger.getLogger(Client.class.getName());
 
-    public static void main(String[] args) throws IOException {
-        setLookAndFeel();
-
-        DatagramSocket udpSocket = new DatagramSocket();
-
-        Person person = getUserInput();
-
-        String message = personToCsv(person);
-
-        sendMessage(message, udpSocket);
-
-        String serverResponse = getServerResponse(udpSocket);
-
-        showServerResponse(serverResponse);
-
-        udpSocket.close();
+    public static void main(String[] args)  {
+        try {
+            setLookAndFeel();
+            
+            DatagramSocket udpSocket = new DatagramSocket();
+            
+            Person person = getUserInput();
+            
+            String message = personToCsv(person);
+            
+            sendMessage(message, udpSocket);
+            
+            String serverResponse = getServerResponse(udpSocket);
+            
+            showServerResponse(serverResponse);
+            
+            udpSocket.close();
+        } catch (SocketException ex) {
+            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     private static String getServerResponse(DatagramSocket udpSocket) throws IOException {
@@ -56,7 +64,7 @@ public class Client {
     private static void setLookAndFeel() {
         try {
             UIManager.setLookAndFeel(new FlatMacDarkLaf());
-        } catch (Exception e) {
+        } catch (UnsupportedLookAndFeelException e) {
             logger.severe("Error setting FlatLaf theme");
         }
     }
